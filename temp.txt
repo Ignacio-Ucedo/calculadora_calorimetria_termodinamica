@@ -1,0 +1,5 @@
+        const materialLinks = {
+            specific_heat: "https://es.wikipedia.org/wiki/Calor_espec%C3%ADfico#Tabla_de_calores_espec%C3%ADficos_y_sustancias",
+            coeff_expansion: "https://es.wikipedia.org/wiki/Coeficiente_de_dilataci%C3%B3n#Valores_del_coeficiente_de_dilataci%C3%B3n_lineal",
+            conductivity: "https://es.wikipedia.org/wiki/Conductividad_t%C3%A9rmica#Tabla_de_conductividades_t%C3%A9rmicas"
+        };

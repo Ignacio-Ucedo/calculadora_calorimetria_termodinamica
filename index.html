@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Termodinámica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c2461, #1e3799, #0c2461);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .calculator-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .selection-panel {
+            flex: 1;
+            min-width: 300px;
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+        }
+        
+        .selection-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #3498db;
+        }
+        
+        .calculation-list {
+            list-style: none;
+        }
+        
+        .calculation-list li {
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .calculation-list li:hover {
+            background: rgba(52, 152, 219, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .calculation-list li.active {
+            background: #3498db;
+            font-weight: bold;
+        }
+        
+        .calculation-list li i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .input-panel {
+            flex: 2;
+            min-width: 400px;
+            padding: 40px;
+            position: relative;
+        }
+        
+        .panel-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .panel-title i {
+            font-size: 2rem;
+            margin-right: 15px;
+            color: #3498db;
+        }
+        
+        .panel-title h2 {
+            font-size: 1.8rem;
+        }
+        
+        .formula-box {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 10px 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.4rem;
+            overflow-x: auto;
+        }
+        
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .input-field {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .input-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .input-field input,
+        .input-field select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .input-field input:focus,
+        .input-field select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .info-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            /* translate */
+            transform: translateY(18%);
+            color: #3498db;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        button i {
+            margin-right: 10px;
+        }
+        
+        .calculate-btn {
+            background: #3498db;
+            color: white;
+            flex: 2;
+        }
+        
+        .calculate-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .reset-btn {
+            background: #e74c3c;
+            color: white;
+            flex: 1;
+        }
+        
+        .reset-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .result-box {
+            background: #e8f4fc;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            display: none;
+            position: relative;
+        }
+        
+        .result-box h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .result-box h3 i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2980b9;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+        }
+        
+        .explanation {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #34495e;
+            margin-bottom: 15px;
+        }
+        
+        .convert-btn {
+            background: #9b59b6;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .convert-btn:hover {
+            background: #8e44ad;
+        }
+        
+        .conversion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .conversion-card {
+            background: #f0f7ff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid #d1e7ff;
+            transition: transform 0.3s ease;
+        }
+        
+        .conversion-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .conversion-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .conversion-card h4 i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        .conversion-result {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1a73e8;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-card {
+                flex-direction: column;
+            }
+            
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .conversion-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-fire"></i> Calculadora Termodinámica</h1>
+            <p>Cálculos y conversores para termodinámica</p>
+        </header>
+        
+        <div class="calculator-card">
+            <div class="selection-panel">
+                <h2><i class="fas fa-calculator"></i> Cálculos</h2>
+                <ul class="calculation-list">
+                    <li class="active" data-calc="1"><i class="fas fa-thermometer-half"></i> Calor Transferido</li>
+                    <li data-calc="2"><i class="fas fa-tachometer-alt"></i> Conversor de Presión</li>
+                    <li data-calc="3"><i class="fas fa-balance-scale"></i> Equilibrio Térmico</li>
+                    <li data-calc="4"><i class="fas fa-wind"></i> Trabajo en Gases</li>
+                    <li data-calc="5"><i class="fas fa-temperature-high"></i> Conversor de Temperatura</li>
+                    <li data-calc="6"><i class="fas fa-ruler-combined"></i> Conversor de Volumen</li>
+                    <li data-calc="7"><i class="fas fa-flask"></i> Ley de Gases Ideales</li>
+                    <li data-calc="8"><i class="fas fa-ruler"></i> Dilatación Térmica</li>
+                    <li data-calc="9"><i class="fas fa-fire"></i> Transferencia de Calor</li>
+                    <li data-calc="10"><i class="fas fa-bolt"></i> Conversor de Energía</li>
+                </ul>
+            </div>
+            
+            <div class="input-panel">
+                <div class="panel-title">
+                    <i class="fas fa-thermometer-half"></i>
+                    <h2>Calor Transferido (Sin Cambio de Fase)</h2>
+                </div>
+                
+                <div class="formula-box">
+                    Q = m · c · ΔT
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="mass">Masa (kg)</label>
+                        <input type="number" id="mass" placeholder="Ej: 2.5">
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="specific-heat">Calor Específico (J/kg·K)</label>
+                        <input type="number" id="specific-heat" placeholder="Ej: 4186 (agua)">
+                        <i class="fas fa-info-circle info-icon" title="Ver valores típicos" data-info="specific_heat"></i>
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="temp-change">Cambio de Temperatura (°C)</label>
+                        <input type="number" id="temp-change" placeholder="Ej: 25">
+                    </div>
+                </div>
+                
+                <div class="buttons">
+                    <button class="calculate-btn" id="calculate">
+                        <i class="fas fa-bolt"></i> Calcular
+                    </button>
+                    <button class="reset-btn" id="reset">
+                        <i class="fas fa-redo"></i> Reiniciar
+                    </button>
+                </div>
+                
+                <div class="result-box" id="result">
+                    <h3><i class="fas fa-clipboard-check"></i> Resultado</h3>
+                    <div class="result-value" id="result-value-container">Q = 0 J</div>
+                    <div class="explanation">
+                        El calor transferido se calcula mediante la fórmula Q = m · c · ΔT, donde:
+                        <ul>
+                            <li>Q es la cantidad de calor transferido (Joules)</li>
+                            <li>m es la masa de la sustancia (kg)</li>
+                            <li>c es el calor específico de la sustancia (J/kg·K)</li>
+                            <li>ΔT es el cambio de temperatura (K o °C)</li>
+                        </ul>
+                    </div>
+                    <button class="convert-btn" data-convert-type="energy">
+                        <i class="fas fa-exchange-alt"></i> Convertir resultado
+                    </button>
+                </div>
+                
+                <!-- Sección para conversores -->
+                <div id="converter-section" style="display: none;">
+                    <div class="conversion-grid" id="conversion-grid">
+                        <!-- Los resultados de conversión aparecerán aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>UNTreF | 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        // Constante para ley de gases ideales
+        const R_GAS_CONSTANT = 8.314; // J/mol·K
+        
+        // Cambiar entre cálculos
+        const calculationItems = document.querySelectorAll('.calculation-list li');
+        const panelTitle = document.querySelector('.panel-title h2');
+        const panelIcon = document.querySelector('.panel-title i');
+        const formulaBox = document.querySelector('.formula-box');
+        const inputGroup = document.querySelector('.input-group');
+        const explanation = document.querySelector('.explanation');
+        const resultBox = document.getElementById('result');
+        const converterSection = document.getElementById('converter-section');
+        const conversionGrid = document.getElementById('conversion-grid');
+        const resultContainer = document.getElementById('result-value-container');
+        
+        // Enlaces a tablas de materiales
+        const materialLinks = {
+            specific_heat: "https://es.wikipedia.org/wiki/Calor_espec%C3%ADfico#Tabla_de_calores_espec%C3%ADficos_y_sustancias",
+            coeff_expansion: "https://es.wikipedia.org/wiki/Coeficiente_de_dilataci%C3%B3n#Valores_del_coeficiente_de_dilataci%C3%B3n_lineal",
+            conductivity: "https://es.wikipedia.org/wiki/Conductividad_t%C3%A9rmica#Tabla_de_conductividades_t%C3%A9rmicas"
+        };
+        
+        // Datos para cada cálculo
+        const calculations = {
+            1: {
+                title: "Calor Transferido (Sin Cambio de Fase)",
+                icon: "fa-thermometer-half",
+                formula: "Q = m · c · ΔT",
+                inputs: [
+                    { id: "mass", label: "Masa (kg)", placeholder: "Ej: 2.5" },
+                    { id: "specific-heat", label: "Calor Específico (J/kg·K)", placeholder: "Ej: 4186 (agua)", info: "specific_heat" },
+                    { id: "temp-change", label: "Cambio de Temperatura (°C)", placeholder: "Ej: 25" }
+                ],
+                explanation: "El calor transferido se calcula mediante la fórmula Q = m · c · ΔT, donde:<ul><li>Q es la cantidad de calor transferido (Joules)</li><li>m es la masa de la sustancia (kg)</li><li>c es el calor específico de la sustancia (J/kg·K)</li><li>ΔT es el cambio de temperatura (K o °C)</li></ul>",
+                isConverter: false,
+                resultUnit: "energy"
+            },
+            2: {
+                title: "Conversor de Unidades de Presión",
+                icon: "fa-tachometer-alt",
+                formula: "Conversión entre unidades de presión",
+                inputs: [
+                    { id: "pressure-value", label: "Valor a convertir", placeholder: "Ej: 101325" },
+                    { id: "pressure-from", label: "De unidad", type: "select", options: [
+                        {value: "pa", text: "Pascal (Pa)"},
+                        {value: "kpa", text: "Kilopascal (kPa)"},
+                        {value: "bar", text: "Bar"},
+                        {value: "atm", text: "Atmósfera (atm)"},
+                        {value: "psi", text: "PSI (lb/in²)"},
+                        {value: "torr", text: "Torr (mmHg)"}
+                    ]},
+                    { id: "pressure-to", label: "A unidad", type: "select", options: [
+                        {value: "pa", text: "Pascal (Pa)"},
+                        {value: "kpa", text: "Kilopascal (kPa)"},
+                        {value: "bar", text: "Bar"},
+                        {value: "atm", text: "Atmósfera (atm)"},
+                        {value: "psi", text: "PSI (lb/in²)"},
+                        {value: "torr", text: "Torr (mmHg)"}
+                    ]}
+                ],
+                explanation: "Conversión entre diferentes unidades de presión utilizadas en termodinámica.",
+                isConverter: true
+            },
+            3: {
+                title: "Equilibrio Térmico (Mezcla de Sustancias)",
+                icon: "fa-balance-scale",
+                formula: "m₁·c₁·(Tₑ - T₁) + m₂·c₂·(Tₑ - T₂) = 0",
+                inputs: [
+                    { id: "mass1", label: "Masa Sustancia 1 (kg)", placeholder: "Ej: 0.8" },
+                    { id: "specific-heat1", label: "Calor Esp. Sustancia 1 (J/kg·K)", placeholder: "Ej: 900 (aluminio)", info: "specific_heat" },
+                    { id: "temp1", label: "Temp. Inicial Sustancia 1 (°C)", placeholder: "Ej: 90" },
+                    { id: "mass2", label: "Masa Sustancia 2 (kg)", placeholder: "Ej: 1.2" },
+                    { id: "specific-heat2", label: "Calor Esp. Sustancia 2 (J/kg·K)", placeholder: "Ej: 4186 (agua)", info: "specific_heat" },
+                    { id: "temp2", label: "Temp. Inicial Sustancia 2 (°C)", placeholder: "Ej: 20" }
+                ],
+                explanation: "La temperatura de equilibrio en una mezcla se calcula resolviendo la ecuación de conservación de energía:<ul><li>m₁·c₁·(Tₑ - T₁) + m₂·c₂·(Tₑ - T₂) = 0</li><li>Donde Tₑ es la temperatura de equilibrio</li></ul>",
+                isConverter: false,
+                resultUnit: "temperature"
+            },
+            4: {
+                title: "Trabajo en Expansión de Gases (Isobárico)",
+                icon: "fa-wind",
+                formula: "W = P · ΔV",
+                inputs: [
+                    { id: "pressure", label: "Presión (Pa)", placeholder: "Ej: 101325" },
+                    { id: "volume-change", label: "Cambio de Volumen (m³)", placeholder: "Ej: 0.02" }
+                ],
+                explanation: "El trabajo realizado por un gas en expansión a presión constante se calcula como:<ul><li>W = P · ΔV</li><li>Donde P es la presión constante (Pascales)</li><li>ΔV es el cambio de volumen (m³)</li></ul>",
+                isConverter: false,
+                resultUnit: "energy"
+            },
+            5: {
+                title: "Conversor de Unidades de Temperatura",
+                icon: "fa-temperature-high",
+                formula: "Conversión entre escalas termométricas",
+                inputs: [
+                    { id: "temp-value", label: "Valor a convertir", placeholder: "Ej: 25" },
+                    { id: "temp-from", label: "De unidad", type: "select", options: [
+                        {value: "c", text: "Celsius (°C)"},
+                        {value: "f", text: "Fahrenheit (°F)"},
+                        {value: "k", text: "Kelvin (K)"}
+                    ]},
+                    { id: "temp-to", label: "A unidad", type: "select", options: [
+                        {value: "c", text: "Celsius (°C)"},
+                        {value: "f", text: "Fahrenheit (°F)"},
+                        {value: "k", text: "Kelvin (K)"}
+                    ]}
+                ],
+                explanation: "Conversión entre las escalas de temperatura más utilizadas en termodinámica.",
+                isConverter: true
+            },
+            6: {
+                title: "Conversor de Unidades de Volumen",
+                icon: "fa-ruler-combined",
+                formula: "Conversión entre unidades de volumen",
+                inputs: [
+                    { id: "volume-value", label: "Valor a convertir", placeholder: "Ej: 1" },
+                    { id: "volume-from", label: "De unidad", type: "select", options: [
+                        {value: "m3", text: "Metro cúbico (m³)"},
+                        {value: "l", text: "Litro (L)"},
+                        {value: "ml", text: "Mililitro (mL)"},
+                        {value: "ft3", text: "Pie cúbico (ft³)"},
+                        {value: "in3", text: "Pulgada cúbica (in³)"},
+                        {value: "gal", text: "Galón (US)"}
+                    ]},
+                    { id: "volume-to", label: "A unidad", type: "select", options: [
+                        {value: "m3", text: "Metro cúbico (m³)"},
+                        {value: "l", text: "Litro (L)"},
+                        {value: "ml", text: "Mililitro (mL)"},
+                        {value: "ft3", text: "Pie cúbico (ft³)"},
+                        {value: "in3", text: "Pulgada cúbica (in³)"},
+                        {value: "gal", text: "Galón (US)"}
+                    ]}
+                ],
+                explanation: "Conversión entre diferentes unidades de volumen utilizadas en termodinámica.",
+                isConverter: true
+            },
+            7: {
+                title: "Ley de los Gases Ideales",
+                icon: "fa-flask",
+                formula: "P · V = n · R · T",
+                inputs: [
+                    { id: "pressure-gas", label: "Presión (Pa)", placeholder: "Ej: 101325 (Dejar vacío para calcular)" },
+                    { id: "volume-gas", label: "Volumen (m³)", placeholder: "Ej: 0.0224 (Dejar vacío para calcular)" },
+                    { id: "moles", label: "Cantidad de Sustancia (mol)", placeholder: "Ej: 1 (Dejar vacío para calcular)" },
+                    { id: "temp-gas", label: "Temperatura (K)", placeholder: "Ej: 273 (Dejar vacío para calcular)" }
+                ],
+                explanation: "La ley de los gases ideales relaciona presión, volumen, temperatura y cantidad de sustancia:<ul><li>P · V = n · R · T</li><li>R es la constante universal de los gases (8.314 J/mol·K)</li><li>Deje vacío el valor que desea calcular</li></ul>",
+                isConverter: false,
+                resultUnit: "variable"
+            },
+            8: {
+                title: "Dilatación Térmica Lineal",
+                icon: "fa-ruler",
+                formula: "ΔL = L₀ · α · ΔT",
+                inputs: [
+                    { id: "initial-length", label: "Longitud Inicial (m)", placeholder: "Ej: 2" },
+                    { id: "coeff-expansion", label: "Coeficiente Dilatación (1/°C)", placeholder: "Ej: 0.000012 (acero)", info: "coeff_expansion" },
+                    { id: "temp-change-dilat", label: "Cambio Temperatura (°C)", placeholder: "Ej: 50" }
+                ],
+                explanation: "La dilatación lineal de un material se calcula como:<ul><li>ΔL = L₀ · α · ΔT</li><li>Donde L₀ es la longitud inicial (metros)</li><li>α es el coeficiente de dilatación lineal (1/°C)</li><li>ΔT es el cambio de temperatura (°C)</li></ul>",
+                isConverter: false,
+                resultUnit: "length"
+            },
+            9: {
+                title: "Transferencia de Calor por Conducción",
+                icon: "fa-fire",
+                formula: "Q = (k · A · ΔT · t) / d",
+                inputs: [
+                    { id: "conductivity", label: "Conductividad Térmica (W/m·K)", placeholder: "Ej: 0.8 (vidrio)", info: "conductivity" },
+                    { id: "area", label: "Área Transversal (m²)", placeholder: "Ej: 2" },
+                    { id: "temp-diff", label: "Diferencia Temperatura (K)", placeholder: "Ej: 30" },
+                    { id: "time", label: "Tiempo (s)", placeholder: "Ej: 3600" },
+                    { id: "thickness", label: "Espesor (m)", placeholder: "Ej: 0.01" }
+                ],
+                explanation: "La transferencia de calor por conducción se calcula mediante:<ul><li>Q = (k · A · ΔT · t) / d</li><li>Donde k es la conductividad térmica (W/m·K)</li><li>A es el área transversal (m²)</li><li>ΔT es la diferencia de temperatura (K)</li><li>t es el tiempo (s)</li><li>d es el espesor del material (m)</li></ul>",
+                isConverter: false,
+                resultUnit: "energy"
+            },
+            10: {
+                title: "Conversor de Unidades de Energía",
+                icon: "fa-bolt",
+                formula: "Conversión entre unidades de energía",
+                inputs: [
+                    { id: "energy-value", label: "Valor a convertir", placeholder: "Ej: 3600000" },
+                    { id: "energy-from", label: "De unidad", type: "select", options: [
+                        {value: "J", text: "Joule (J)"},
+                        {value: "kj", text: "Kilojoule (kJ)"},
+                        {value: "kwh", text: "Kilowatt-hora (kWh)"},
+                        {value: "cal", text: "Caloría (cal)"},
+                        {value: "kcal", text: "Kilocaloría (kcal)"},
+                        {value: "btu", text: "BTU"}
+                    ]},
+                    { id: "energy-to", label: "A unidad", type: "select", options: [
+                        {value: "J", text: "Joule (J)"},
+                        {value: "kj", text: "Kilojoule (kJ)"},
+                        {value: "kwh", text: "Kilowatt-hora (kWh)"},
+                        {value: "cal", text: "Caloría (cal)"},
+                        {value: "kcal", text: "Kilocaloría (kcal)"},
+                        {value: "btu", text: "BTU"}
+                    ]}
+                ],
+                explanation: "Conversión entre diferentes unidades de energía utilizadas en termodinámica.",
+                isConverter: true
+            }
+        };
+        
+        // Cambiar cálculo activo
+        calculationItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Remover clase activa de todos
+                calculationItems.forEach(li => li.classList.remove('active'));
+                // Agregar clase activa al seleccionado
+                item.classList.add('active');
+                
+                // Obtener el cálculo seleccionado
+                const calcId = item.getAttribute('data-calc');
+                const calc = calculations[calcId];
+                
+                // Actualizar la interfaz
+                panelTitle.textContent = calc.title;
+                panelIcon.className = `fas ${calc.icon}`;
+                formulaBox.textContent = calc.formula;
+                explanation.innerHTML = calc.explanation;
+                
+                // Generar campos de entrada
+                inputGroup.innerHTML = '';
+                calc.inputs.forEach(input => {
+                    const inputField = document.createElement('div');
+                    inputField.className = 'input-field';
+                    
+                    if (input.type === 'select') {
+                        inputField.innerHTML = `
+                            <label for="${input.id}">${input.label}</label>
+                            <select id="${input.id}">
+                                ${input.options.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('')}
+                            </select>
+                        `;
+                    } else {
+                        let infoIcon = '';
+                        if (input.info) {
+                            infoIcon = `<i class="fas fa-info-circle info-icon" title="Ver valores típicos" data-info="${input.info}"></i>`;
+                        }
+                        
+                        inputField.innerHTML = `
+                            <label for="${input.id}">${input.label}</label>
+                            <input type="number" id="${input.id}" placeholder="${input.placeholder}">
+                            ${infoIcon}
+                        `;
+                    }
+                    
+                    inputGroup.appendChild(inputField);
+                });
+                
+                // Limpiar resultado
+                resultContainer.textContent = '';
+                
+                // Mostrar/ocultar secciones según el tipo
+                if (calc.isConverter) {
+                    resultBox.style.display = 'none';
+                    converterSection.style.display = 'block';
+                    conversionGrid.innerHTML = '';
+                } else {
+                    resultBox.style.display = 'none';
+                    converterSection.style.display = 'none';
+                }
+                
+                // Ocultar botón de conversión si no aplica
+                const convertBtn = document.querySelector('.convert-btn');
+                if (calc.resultUnit && calc.resultUnit !== "variable") {
+                    convertBtn.style.display = 'block';
+                    convertBtn.setAttribute('data-convert-type', calc.resultUnit);
+                } else {
+                    convertBtn.style.display = 'none';
+                }
+            });
+        });
+        
+        // Calcular resultado
+        document.getElementById('calculate').addEventListener('click', () => {
+            const activeCalc = document.querySelector('.calculation-list li.active');
+            const calcId = activeCalc.getAttribute('data-calc');
+            const calc = calculations[calcId];
+            
+            let resultValue = 0;
+            let resultVariable = '';
+            let resultUnit = '';
+            
+            try {
+                switch(calcId) {
+                    case '1': // Calor Transferido
+                        const m = parseFloat(document.getElementById('mass').value);
+                        const c = parseFloat(document.getElementById('specific-heat').value);
+                        const dT = parseFloat(document.getElementById('temp-change').value);
+                        resultValue = m * c * dT;
+                        resultContainer.textContent = `Q = ${resultValue.toFixed(4)} J`;
+                        break;
+                        
+                    case '2': // Conversor de Presión
+                        const pressureValue = parseFloat(document.getElementById('pressure-value').value);
+                        const fromPressure = document.getElementById('pressure-from').value;
+                        const toPressure = document.getElementById('pressure-to').value;
+                        resultValue = convertPressure(pressureValue, fromPressure, toPressure);
+                        resultContainer.textContent = `Resultado: ${resultValue.toFixed(4)} ${toPressure}`;
+                        displayAllConversions(pressureValue, fromPressure, 'pressure');
+                        break;
+                        
+                    case '3': // Equilibrio Térmico
+                        const m1 = parseFloat(document.getElementById('mass1').value);
+                        const c1 = parseFloat(document.getElementById('specific-heat1').value);
+                        const T1 = parseFloat(document.getElementById('temp1').value);
+                        const m2_ = parseFloat(document.getElementById('mass2').value);
+                        const c2 = parseFloat(document.getElementById('specific-heat2').value);
+                        const T2 = parseFloat(document.getElementById('temp2').value);
+                        resultValue = (m1 * c1 * T1 + m2_ * c2 * T2) / (m1 * c1 + m2_ * c2);
+                        resultContainer.textContent = `Temperatura de equilibrio = ${resultValue.toFixed(4)} °C`;
+                        break;
+                        
+                    case '4': // Trabajo en Gases
+                        const P = parseFloat(document.getElementById('pressure').value);
+                        const dV = parseFloat(document.getElementById('volume-change').value);
+                        resultValue = P * dV;
+                        resultContainer.textContent = `W = ${resultValue.toFixed(4)} J`;
+                        break;
+                        
+                    case '5': // Conversor de Temperatura
+                        const tempValue = parseFloat(document.getElementById('temp-value').value);
+                        const fromTemp = document.getElementById('temp-from').value;
+                        const toTemp = document.getElementById('temp-to').value;
+                        resultValue = convertTemperature(tempValue, fromTemp, toTemp);
+                        resultContainer.textContent = `Resultado: ${resultValue.toFixed(4)} ${toTemp}`;
+                        displayAllConversions(tempValue, fromTemp, 'temperature');
+                        break;
+                        
+                    case '6': // Conversor de Volumen
+                        const volumeValue = parseFloat(document.getElementById('volume-value').value);
+                        const fromVolume = document.getElementById('volume-from').value;
+                        const toVolume = document.getElementById('volume-to').value;
+                        resultValue = convertVolume(volumeValue, fromVolume, toVolume);
+                        resultContainer.textContent = `Resultado: ${resultValue.toFixed(4)} ${toVolume}`;
+                        displayAllConversions(volumeValue, fromVolume, 'volume');
+                        break;
+                        
+                    case '7': // Ley de Gases Ideales
+                        const Pg = document.getElementById('pressure-gas').value;
+                        const Vg = document.getElementById('volume-gas').value;
+                        const n = document.getElementById('moles').value;
+                        const Tg = document.getElementById('temp-gas').value;
+                        
+                        // Contar campos vacíos
+                        const inputs = [Pg, Vg, n, Tg];
+                        const emptyCount = inputs.filter(val => val === '').length;
+                        
+                        if (emptyCount !== 1) {
+                            throw new Error("Por favor deje exactamente un campo vacío para calcular");
+                        }
+                        
+                        // Calcular la variable faltante
+                        if (Pg === '') {
+                            resultValue = (parseFloat(n) * R_GAS_CONSTANT * parseFloat(Tg)) / parseFloat(Vg);
+                            resultVariable = "Presión";
+                            resultUnit = "Pa";
+                        } else if (Vg === '') {
+                            resultValue = (parseFloat(n) * R_GAS_CONSTANT * parseFloat(Tg)) / parseFloat(Pg);
+                            resultVariable = "Volumen";
+                            resultUnit = "m³";
+                        } else if (n === '') {
+                            resultValue = (parseFloat(Pg) * parseFloat(Vg)) / (R_GAS_CONSTANT * parseFloat(Tg));
+                            resultVariable = "Moles";
+                            resultUnit = "mol";
+                        } else if (Tg === '') {
+                            resultValue = (parseFloat(Pg) * parseFloat(Vg)) / (parseFloat(n) * R_GAS_CONSTANT);
+                            resultVariable = "Temperatura";
+                            resultUnit = "K";
+                        }
+                        
+                        resultContainer.innerHTML = `${resultVariable} = ${resultValue.toFixed(4)} ${resultUnit}`;
+                        break;
+                        
+                    case '8': // Dilatación Térmica
+                        const L0 = parseFloat(document.getElementById('initial-length').value);
+                        const alpha = parseFloat(document.getElementById('coeff-expansion').value);
+                        const dTd = parseFloat(document.getElementById('temp-change-dilat').value);
+                        resultValue = L0 * alpha * dTd;
+                        resultContainer.textContent = `ΔL = ${resultValue.toFixed(6)} m`;
+                        break;
+                        
+                    case '9': // Transferencia de Calor
+                        const k = parseFloat(document.getElementById('conductivity').value);
+                        const A = parseFloat(document.getElementById('area').value);
+                        const dTf = parseFloat(document.getElementById('temp-diff').value);
+                        const t = parseFloat(document.getElementById('time').value);
+                        const d = parseFloat(document.getElementById('thickness').value);
+                        resultValue = (k * A * dTf * t) / d;
+                        resultContainer.textContent = `Q = ${resultValue.toFixed(4)} J`;
+                        break;
+                        
+                    case '10': // Conversor de Energía
+                        const energyValue = parseFloat(document.getElementById('energy-value').value);
+                        const fromEnergy = document.getElementById('energy-from').value;
+                        const toEnergy = document.getElementById('energy-to').value;
+                        resultValue = convertEnergy(energyValue, fromEnergy, toEnergy);
+                        resultContainer.textContent = `Resultado: ${resultValue.toFixed(4)} ${toEnergy}`;
+                        displayAllConversions(energyValue, fromEnergy, 'energy');
+                        break;
+                }
+                
+                if (isNaN(resultValue)) {
+                    throw new Error("Por favor ingresa valores válidos en todos los campos");
+                }
+                
+                // Manejar resultados para conversores vs cálculos normales
+                if (calc.isConverter) {
+                    resultBox.style.display = 'block';
+                } else {
+                    resultBox.style.display = 'block';
+                    converterSection.style.display = 'none';
+                    
+                    // Actualizar el valor para conversión
+                    const convertBtn = document.querySelector('.convert-btn');
+                    
+                    // Corrección para gases ideales: mostrar botón según tipo de resultado
+                    if (calcId === '7') {
+                        let convertType = '';
+                        if (resultVariable === "Presión") convertType = "pressure";
+                        else if (resultVariable === "Volumen") convertType = "volume";
+                        else if (resultVariable === "Temperatura") convertType = "temperature";
+                        
+                        if (convertType) {
+                            convertBtn.style.display = 'block';
+                            convertBtn.setAttribute('data-convert-type', convertType);
+                            convertBtn.setAttribute('data-value', resultValue);
+                        } else {
+                            convertBtn.style.display = 'none';
+                        }
+                    } 
+                    // Para otros cálculos
+                    else if (calc.resultUnit && calc.resultUnit !== "variable" && calcId !== '8') {
+                        convertBtn.style.display = 'block';
+                        convertBtn.setAttribute('data-convert-type', calc.resultUnit);
+                        convertBtn.setAttribute('data-value', resultValue);
+                    } else {
+                        convertBtn.style.display = 'none';
+                    }
+                }
+                
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+        
+        // Reiniciar campos
+        document.getElementById('reset').addEventListener('click', () => {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => input.value = '');
+            resultBox.style.display = 'none';
+            conversionGrid.innerHTML = '';
+            resultContainer.textContent = '';
+        });
+        
+        // Funciones de conversión
+        function convertPressure(value, fromUnit, toUnit) {
+            // Convertir todo a Pascal primero
+            let valueInPa;
+            
+            switch(fromUnit) {
+                case 'pa': valueInPa = value; break;
+                case 'kpa': valueInPa = value * 1000; break;
+                case 'bar': valueInPa = value * 100000; break;
+                case 'atm': valueInPa = value * 101325; break;
+                case 'psi': valueInPa = value * 6894.76; break;
+                case 'torr': valueInPa = value * 133.322; break;
+                default: return value;
+            }
+            
+            // Convertir de Pascal a la unidad objetivo
+            switch(toUnit) {
+                case 'pa': return valueInPa;
+                case 'kpa': return valueInPa / 1000;
+                case 'bar': return valueInPa / 100000;
+                case 'atm': return valueInPa / 101325;
+                case 'psi': return valueInPa / 6894.76;
+                case 'torr': return valueInPa / 133.322;
+                default: return valueInPa;
+            }
+        }
+        
+        function convertTemperature(value, fromUnit, toUnit) {
+            // Convertir todo a Celsius primero
+            let valueInC;
+            
+            switch(fromUnit) {
+                case 'c': valueInC = value; break;
+                case 'f': valueInC = (value - 32) * 5/9; break;
+                case 'k': valueInC = value - 273.15; break;
+                default: return value;
+            }
+            
+            // Convertir de Celsius a la unidad objetivo
+            switch(toUnit) {
+                case 'c': return valueInC;
+                case 'f': return (valueInC * 9/5) + 32;
+                case 'k': return valueInC + 273.15;
+                default: return valueInC;
+            }
+        }
+        
+        function convertVolume(value, fromUnit, toUnit) {
+            // Convertir todo a metro cúbico primero
+            let valueInM3;
+            
+            switch(fromUnit) {
+                case 'm3': valueInM3 = value; break;
+                case 'l': valueInM3 = value / 1000; break;
+                case 'ml': valueInM3 = value / 1000000; break;
+                case 'ft3': valueInM3 = value * 0.0283168; break;
+                case 'in3': valueInM3 = value * 0.0000163871; break;
+                case 'gal': valueInM3 = value * 0.00378541; break;
+                default: return value;
+            }
+            
+            // Convertir de metro cúbico a la unidad objetivo
+            switch(toUnit) {
+                case 'm3': return valueInM3;
+                case 'l': return valueInM3 * 1000;
+                case 'ml': return valueInM3 * 1000000;
+                case 'ft3': return valueInM3 / 0.0283168;
+                case 'in3': return valueInM3 / 0.0000163871;
+                case 'gal': return valueInM3 / 0.00378541;
+                default: return valueInM3;
+            }
+        }
+        
+        function convertEnergy(value, fromUnit, toUnit) {
+            // Convertir todo a Joule primero
+            let valueInJ;
+            
+            switch(fromUnit) {
+                case 'j': valueInJ = value; break;
+                case 'kj': valueInJ = value * 1000; break;
+                case 'kwh': valueInJ = value * 3600000; break;
+                case 'cal': valueInJ = value * 4.184; break;
+                case 'kcal': valueInJ = value * 4184; break;
+                case 'btu': valueInJ = value * 1055.06; break;
+                default: return value;
+            }
+            
+            // Convertir de Joule a la unidad objetivo
+            switch(toUnit) {
+                case 'j': return valueInJ;
+                case 'kj': return valueInJ / 1000;
+                case 'kwh': return valueInJ / 3600000;
+                case 'cal': return valueInJ / 4.184;
+                case 'kcal': return valueInJ / 4184;
+                case 'btu': return valueInJ / 1055.06;
+                default: return valueInJ;
+            }
+        }
+        
+        // Mostrar todas las conversiones posibles
+        function displayAllConversions(value, fromUnit, type) {
+            conversionGrid.innerHTML = '';
+            
+            let units = [];
+            let converter;
+            
+            switch(type) {
+                case 'pressure':
+                    units = [
+                        {id: 'pa', name: 'Pascal (Pa)', symbol: 'Pa'},
+                        {id: 'kpa', name: 'Kilopascal (kPa)', symbol: 'kPa'},
+                        {id: 'bar', name: 'Bar', symbol: 'bar'},
+                        {id: 'atm', name: 'Atmósfera (atm)', symbol: 'atm'},
+                        {id: 'psi', name: 'PSI (lb/in²)', symbol: 'psi'},
+                        {id: 'torr', name: 'Torr (mmHg)', symbol: 'torr'}
+                    ];
+                    converter = convertPressure;
+                    break;
+                    
+                case 'temperature':
+                    units = [
+                        {id: 'c', name: 'Celsius (°C)', symbol: '°C'},
+                        {id: 'f', name: 'Fahrenheit (°F)', symbol: '°F'},
+                        {id: 'k', name: 'Kelvin (K)', symbol: 'K'}
+                    ];
+                    converter = convertTemperature;
+                    break;
+                    
+                case 'volume':
+                    units = [
+                        {id: 'm3', name: 'Metro cúbico (m³)', symbol: 'm³'},
+                        {id: 'l', name: 'Litro (L)', symbol: 'L'},
+                        {id: 'ml', name: 'Mililitro (mL)', symbol: 'mL'},
+                        {id: 'ft3', name: 'Pie cúbico (ft³)', symbol: 'ft³'},
+                        {id: 'in3', name: 'Pulgada cúbica (in³)', symbol: 'in³'},
+                        {id: 'gal', name: 'Galón (US)', symbol: 'gal'}
+                    ];
+                    converter = convertVolume;
+                    break;
+                    
+                case 'energy':
+                    units = [
+                        {id: 'j', name: 'Joule (J)', symbol: 'J'},
+                        {id: 'kj', name: 'Kilojoule (kJ)', symbol: 'kJ'},
+                        {id: 'kwh', name: 'Kilowatt-hora (kWh)', symbol: 'kWh'},
+                        {id: 'cal', name: 'Caloría (cal)', symbol: 'cal'},
+                        {id: 'kcal', name: 'Kilocaloría (kcal)', symbol: 'kcal'},
+                        {id: 'btu', name: 'BTU', symbol: 'BTU'}
+                    ];
+                    converter = convertEnergy;
+                    break;
+            }
+            
+            units.forEach(unit => {
+                if (unit.id !== fromUnit) {
+                    const convertedValue = converter(value, fromUnit, unit.id);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'conversion-card';
+                    card.innerHTML = `
+                        <h4><i class="fas fa-exchange-alt"></i> ${unit.name}</h4>
+                        <div class="conversion-result">${convertedValue.toFixed(6)} ${unit.symbol}</div>
+                    `;
+                    
+                    conversionGrid.appendChild(card);
+                }
+            });
+        }
+        
+        // Enlaces a tablas de materiales
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('info-icon')) {
+                const infoType = e.target.getAttribute('data-info');
+                const url = materialLinks[infoType];
+                if (url) {
+                    window.open(url, '_blank');
+                }
+            }
+        });
+        
+        // Botón de conversión de resultados
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('convert-btn')) {
+                const convertType = e.target.getAttribute('data-convert-type');
+                const value = parseFloat(e.target.getAttribute('data-value'));
+                
+                // Determinar qué conversor seleccionar
+                let calcId;
+                switch(convertType) {
+                    case 'pressure': calcId = 2; break;
+                    case 'temperature': calcId = 5; break;
+                    case 'volume': calcId = 6; break;
+                    case 'energy': calcId = 10; break;
+                    default: return;
+                }
+                
+                // Seleccionar el conversor correspondiente
+                const targetCalc = document.querySelector(`.calculation-list li[data-calc="${calcId}"]`);
+                targetCalc.click();
+                
+                // Establecer el valor en el conversor
+                setTimeout(() => {
+                    if (calcId === 5) {
+                        // Para temperatura, establecer unidad de origen como Celsius
+                        document.getElementById('temp-from').value = 'c';
+                        document.getElementById('temp-value').value = value;
+                    } else if (calcId === 2) {
+                        // Para presión, establecer unidad de origen como Pa
+                        document.getElementById('pressure-from').value = 'pa';
+                        document.getElementById('pressure-value').value = value;
+                    } else if (calcId === 6) {
+                        // Para volumen/longitud, establecer unidad de origen como m³
+                        document.getElementById('volume-from').value = 'm3';
+                        document.getElementById('volume-value').value = value;
+                    } else if (calcId === 10) {
+                        // Para energía, establecer unidad de origen como J
+                        document.getElementById('energy-from').value = 'J';
+                        document.getElementById('energy-value').value = value;
+                    }
+                    
+                    // Ejecutar cálculo automático
+                    document.getElementById('calculate').click();
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>
